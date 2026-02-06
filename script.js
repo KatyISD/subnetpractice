@@ -2,7 +2,8 @@
 class IPCalculator {
     static ipToNumber(ip) {
         const octets = ip.split('.').map(Number);
-        return (octets[0] << 24) + (octets[1] << 16) + (octets[2] << 8) + octets[3];
+        // Use >>> 0 to ensure unsigned 32-bit integer
+        return ((octets[0] << 24) >>> 0) + (octets[1] << 16) + (octets[2] << 8) + octets[3];
     }
 
     static numberToIP(num) {
@@ -88,6 +89,11 @@ class IPCalculator {
     static generateRandomIP(difficulty) {
         let cidr;
         switch(difficulty) {
+            case 'classful':
+                // Only /8, /16, or /24 (octet boundaries)
+                const classfulOptions = [8, 16, 24];
+                cidr = classfulOptions[Math.floor(Math.random() * classfulOptions.length)];
+                break;
             case 'easy':
                 cidr = 24 + Math.floor(Math.random() * 7); // /24 to /30
                 break;
